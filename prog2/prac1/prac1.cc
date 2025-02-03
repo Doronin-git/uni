@@ -2,6 +2,9 @@
 #include <cstdlib> // Para rand() y srand()
 #include <cstring> // Para strcpy(), strcat() y strcmp()
 #include <vector>
+#include <cstdio>
+
+
 
 using namespace std;
 
@@ -93,18 +96,43 @@ void showMenu(){
          << "Option: ";
 }
 
-void addTeam(vector<Team> teams){
-    int size = teams.size();
-    if (size >= kMAXTEAMS){
+void addTeam(vector<Team>& teams){
+    if (teams.size() >= kMAXTEAMS){
         error(ERR_MAX_TEAMS);
+        return;
     }
     else {
+        teams.push_back(Team());
+        int size = teams.size() -1;
         teams[size].id = size;
         cout << "Enter team name: ";
-        cin >> teams[size].name;
-        if (teams[size].name[0] == '\0'){
-            //teams[size].name = 'Team_%d', size;
+        char buffer[kTEAMNAME];
+        cin.getline(buffer, kTEAMNAME);
+        if (buffer[0] == '\0'){
+            sprintf(teams[size].name ,"Team_%d", size);
         }
+        else {
+            strcpy(teams[size].name , buffer);
+        }
+        // wins, losses, draws y points
+        teams[size].wins = 0;
+        teams[size].losses = 0;
+        teams[size].draws = 0;
+        teams[size].points = 0;
+        /*
+        A continuación, el programa deberá crear la lista de jugadores y almacenarlos en el campo players
+del registro Team. El nombre del jugador se generará automáticamente, comenzando por el nombre del
+equipo, seguido de la cadena -R y finalmente el número de jugador (valores de 1 a 5). Por ejemplo, si el
+equipo se llama Team_12, el primer jugador creado se llamará Team_12-R1, el segundo Team_12-R2 y así
+sucesivamente. El número de goles de cada jugador se inicializará a 0 y el campo best a false.
+         */
+        for (int i = 0; i< kPLAYERS;i++){
+            char gname[kTEAMNAME];
+            strcpy(gname, teams[size].name); // ahora tiene el nombre de team
+            sprintf(teams[size].players[i].name, "%s-R%d", gname, i); 
+        }
+        
+
     }
 }
 
@@ -113,14 +141,14 @@ int main(){
     char option;
     vector<Team> teams;
     srand(888); // Fija la semilla del generador de números aleatorios. ¡NO TOCAR!
-    
     do{
         showMenu();
         cin >> option;
         cin.ignore(); // Para evitar que el salto de línea se quede en el buffer de teclado y luego pueda dar problemas si usas "getline"
         
         switch(option){
-            case '1': // Llamar a la función "addTeam" para añadir un nuevo equipo
+            case '1':
+                addTeam(teams);
                 break;
             case '2': // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
                 break;
