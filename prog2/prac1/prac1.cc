@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib> // Para rand() y srand()
 #include <cstring> // Para strcpy(), strcat() y strcmp()
+#include <vector>
 
 using namespace std;
 
@@ -92,10 +93,25 @@ void showMenu(){
          << "Option: ";
 }
 
+void addTeam(vector<Team> teams){
+    int size = teams.size();
+    if (size >= kMAXTEAMS){
+        error(ERR_MAX_TEAMS);
+    }
+    else {
+        teams[size].id = size;
+        cout << "Enter team name: ";
+        cin >> teams[size].name;
+        if (teams[size].name[0] == '\0'){
+            //teams[size].name = 'Team_%d', size;
+        }
+    }
+}
+
 // Función principal. Tendrás que añadir más código tuyo
 int main(){
     char option;
-
+    vector<Team> teams;
     srand(888); // Fija la semilla del generador de números aleatorios. ¡NO TOCAR!
     
     do{
