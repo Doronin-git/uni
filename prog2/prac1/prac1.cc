@@ -119,21 +119,63 @@ void addTeam(vector<Team>& teams){
         teams[size].losses = 0;
         teams[size].draws = 0;
         teams[size].points = 0;
-        /*
-        A continuación, el programa deberá crear la lista de jugadores y almacenarlos en el campo players
-del registro Team. El nombre del jugador se generará automáticamente, comenzando por el nombre del
-equipo, seguido de la cadena -R y finalmente el número de jugador (valores de 1 a 5). Por ejemplo, si el
-equipo se llama Team_12, el primer jugador creado se llamará Team_12-R1, el segundo Team_12-R2 y así
-sucesivamente. El número de goles de cada jugador se inicializará a 0 y el campo best a false.
-         */
+
         for (int i = 0; i< kPLAYERS;i++){
             char gname[kTEAMNAME];
             strcpy(gname, teams[size].name); // ahora tiene el nombre de team
             sprintf(teams[size].players[i].name, "%s-R%d", gname, i); 
         }
-        
-
     }
+}
+
+void generateAllTeams(vector<Team> &teams){
+    teams.clear();
+    unsigned int teamNum;
+    do{
+        cout << "Enter number of teams: ";
+        cin >> teamNum;
+        if (teamNum < 2 || teamNum > 20){
+            error(ERR_NUM_TEAMS);
+        }
+    }while(teamNum < 2 || teamNum > 20);
+    for (int i=0;i < teamNum;i++){
+        teams.push_back(Team());
+        sprintf(teams[i].name ,"Team_%d", i);
+        teams[i].wins = 0;
+        teams[i].losses = 0;
+        teams[i].draws = 0;
+        teams[i].points = 0;
+        for (int j = 0; j< kPLAYERS;j++){
+            char gname[kTEAMNAME];
+            strcpy(gname, teams[i].name); // ahora tiene el nombre de team
+            sprintf(teams[i].players[j].name, "%s-R%d", gname, j); 
+        }
+    }
+}
+
+void addAllTeams(vector<Team> &teams){
+    unsigned char option;
+    if (teams.size()> 0){
+        do{
+            cout << "Do you want to delete existing teams (y/n)?"<< endl;
+            cin >> option;
+            cin.ignore();
+        }while(option != 'n' || option != 'y');
+
+        if (option == 'n'){
+            return;
+        }
+        else{
+            generateAllTeams(teams);
+        }
+        
+    }
+    else{
+        generateAllTeams(teams);
+    }
+
+
+
 }
 
 // Función principal. Tendrás que añadir más código tuyo
@@ -150,7 +192,8 @@ int main(){
             case '1':
                 addTeam(teams);
                 break;
-            case '2': // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
+            case '2':
+                addAllTeams(teams); // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
                 break;
             case '3': // Llamar a la función "deleteTeam" para borrar un equipo
                 break;
