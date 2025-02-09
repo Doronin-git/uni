@@ -160,7 +160,7 @@ void addAllTeams(vector<Team> &teams){
             cout << "Do you want to delete existing teams (y/n)?"<< endl;
             cin >> option;
             cin.ignore();
-        }while(option != 'n' || option != 'y');
+        }while(option != 'n' && option != 'y');
 
         if (option == 'n'){
             return;
@@ -178,6 +178,70 @@ void addAllTeams(vector<Team> &teams){
 
 }
 
+int findTeam(vector<Team> teams, char searchedTeam[kMAXTEAMS]){
+    int result = -1;
+    for (int i = 0;i<teams.size();i++){
+        if (strcmp(teams[i].name, searchedTeam) == 0){
+            result = i;
+        }
+    }
+    return result;
+}
+
+void deleteTeam(vector<Team> teams){
+    if (teams.size() == 0){
+        error(ERR_NO_TEAMS);
+        return;
+    }
+    else{
+        cout << "Enter team name:";
+        char searchedTeam[kTEAMNAME];
+        cin.getline(searchedTeam, kTEAMNAME); 
+        if (searchedTeam[0] == '\0'){
+            error(ERR_EMPTY);
+            return;
+        }
+        int teamPos = findTeam(teams, searchedTeam); 
+        if(teamPos == -1){ //if team doesnt exist 
+            error(ERR_NOT_EXIST);
+            return; 
+        }
+        else{
+            teams.erase(teams.begin() + teamPos);
+            //// Поздравляю теперь у тебя дырка в векторе поправь потом.
+        }
+
+    }
+}
+
+void showTeams(vector<Team> teams){
+    if (teams.size() == 0){
+        error(ERR_NO_TEAMS);
+        return;
+    }
+    bool loop = false;
+    do{ //preguntar por nombre
+        cout << "Enter team name:";
+        char searchedTeam[kTEAMNAME];
+        cin.getline(searchedTeam, kTEAMNAME); 
+        if (searchedTeam[0] == '\0'){ // show all
+                for (int i = 0;i<teams.size();i++){
+                    cout << "Name:"<< teams[i].name <<endl
+                        << "Wins: "<< teams[i].wins <<endl
+                        << "Losses: "<< teams[i].losses <<endl
+                        << "Draws: "<< teams[i].draws << endl
+                        << "Points: "<< teams[i].points <<endl;
+                    for (int j = 0;j<kPLAYERS;j++){
+                        char buffer[69];
+                        sprintf(buffer, "%s: %d goals", teams[i].players[j].name, teams[i].players[j].goals);
+                        cout << "%s" <<buffer<< endl;
+                    }
+                }
+        loop = true;
+        }// caso de team no existe y caso de team existe 
+    }while(loop == false);
+    
+}
 // Función principal. Tendrás que añadir más código tuyo
 int main(){
     char option;
@@ -191,13 +255,18 @@ int main(){
         switch(option){
             case '1':
                 addTeam(teams);
+                cout << "Team have been added\n";
                 break;
             case '2':
-                addAllTeams(teams); // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
+                addAllTeams(teams);
+                cout << "Team have been added\n"; // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
                 break;
-            case '3': // Llamar a la función "deleteTeam" para borrar un equipo
+            case '3':
+                deleteTeam(teams);
+                cout << "Team have been eliminated\n"; // Llamar a la función "deleteTeam" para borrar un equipo
                 break;
-            case '4': // Llamar a la función "showTeams" para mostrar los datos de los equipos
+            case '4':
+                showTeams(teams); // Llamar a la función "showTeams" para mostrar los datos de los equipos
                 break;
             case '5': // Llamar a la función "playLeague" para simular los resultados de la competición
                 break;
