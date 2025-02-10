@@ -188,13 +188,13 @@ int findTeam(vector<Team> teams, char searchedTeam[kMAXTEAMS]){
     return result;
 }
 
-void deleteTeam(vector<Team> teams){
+void deleteTeam(vector<Team> &teams){
     if (teams.size() == 0){
         error(ERR_NO_TEAMS);
         return;
     }
     else{
-        cout << "Enter team name:";
+        cout << "Enter team name: ";
         char searchedTeam[kTEAMNAME];
         cin.getline(searchedTeam, kTEAMNAME); 
         if (searchedTeam[0] == '\0'){
@@ -221,27 +221,56 @@ void showTeams(vector<Team> teams){
     }
     bool loop = false;
     do{ //preguntar por nombre
-        cout << "Enter team name:";
+        cout << "Enter team name: ";
         char searchedTeam[kTEAMNAME];
         cin.getline(searchedTeam, kTEAMNAME); 
         if (searchedTeam[0] == '\0'){ // show all
-                for (int i = 0;i<teams.size();i++){
-                    cout << "Name:"<< teams[i].name <<endl
-                        << "Wins: "<< teams[i].wins <<endl
-                        << "Losses: "<< teams[i].losses <<endl
-                        << "Draws: "<< teams[i].draws << endl
-                        << "Points: "<< teams[i].points <<endl;
-                    for (int j = 0;j<kPLAYERS;j++){
-                        char buffer[69];
-                        sprintf(buffer, "%s: %d goals", teams[i].players[j].name, teams[i].players[j].goals);
-                        cout << "%s" <<buffer<< endl;
+            for (int i = 0;i<teams.size();i++){
+                cout << "Name:"<< teams[i].name <<endl
+                    << "Wins: "<< teams[i].wins <<endl
+                    << "Losses: "<< teams[i].losses <<endl
+                    << "Draws: "<< teams[i].draws << endl
+                    << "Points: "<< teams[i].points <<endl;
+                for (int j = 0;j<kPLAYERS;j++){
+                    char buffer[69];
+                    sprintf(buffer, "%s: %d goals", teams[i].players[j].name, teams[i].players[j].goals);
+                    cout << "" <<buffer<< endl;
                     }
                 }
-        loop = true;
-        }// caso de team no existe y caso de team existe 
+            loop = true;
+        }
+        else if(findTeam(teams, searchedTeam) == -1){  // // caso de team no existe 
+            error(ERR_NOT_EXIST);
+        }    
+        else{ // si que existe 
+            int pos = findTeam(teams, searchedTeam);
+            cout << "Name:"<< teams[pos].name <<endl
+                    << "Wins: "<< teams[pos].wins <<endl
+                    << "Losses: "<< teams[pos].losses <<endl
+                    << "Draws: "<< teams[pos].draws << endl
+                    << "Points: "<< teams[pos].points <<endl;
+                for (int j = 0;j<kPLAYERS;j++){
+                    char buffer[69];
+                    sprintf(buffer, "%s: %d goals", teams[pos].players[j].name, teams[pos].players[j].goals);
+                    cout << "" <<buffer<< endl;
+                    }
+            loop = true;
+        }
     }while(loop == false);
-    
 }
+void playLeage(vector<Team> &teams){
+    if (teams.size() <= 1){
+        error(ERR_NUM_TEAMS);
+        return;
+    }
+    else{
+        for (int i = 0;i<= teams.size(); i++){// error aqui de teams size si delete teams en el medio
+            teams[i]
+        }  
+    }
+}
+    
+
 // Función principal. Tendrás que añadir más código tuyo
 int main(){
     char option;
