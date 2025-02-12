@@ -80,6 +80,26 @@ int simulateGoals(Team &team){
 
     return goals;
 }
+void playmatch(Team &home, Team &away){
+    int homegoals = simulateGoals(home);
+    int awaygoals = simulateGoals(away);
+
+    if (homegoals>awaygoals){ // goals part
+        home.points += 3;
+    }
+    else if (homegoals<awaygoals){
+        away.points +=3;
+    }
+    else{
+        home.points +=1;
+        away.points +=1;
+    }
+
+    // best player part
+    for (int i = 0; i<kPLAYERS;i++){ //team home
+        //piensar mucho aqui
+    }
+}
 
 /* Función que muestra el menú de opciones
 return: nada
@@ -258,14 +278,30 @@ void showTeams(vector<Team> teams){
         }
     }while(loop == false);
 }
+void borrar_info(vector<Team> &teams){
+    for (int i=0; i <= kMAXTEAMS; i++){
+        teams[i].draws = 0;
+        teams[i].losses = 0;
+        teams[i].points = 0;
+        teams[i].wins = 0;
+        for (int j = 0; j< kPLAYERS;j++){
+            teams[i].players[j].goals = 0;
+            // no se si hace falta teams[i].players[j].best = false;
+        }
+    }
+}
+
 void playLeage(vector<Team> &teams){
+    borrar_info(teams);
     if (teams.size() <= 1){
         error(ERR_NUM_TEAMS);
         return;
     }
     else{
         for (int i = 0;i<= teams.size(); i++){// error aqui de teams size si delete teams en el medio
-            teams[i]
+            playLeage(teams[i]);
+            playLeage(teams[i+1])
+
         }  
     }
 }
@@ -297,7 +333,8 @@ int main(){
             case '4':
                 showTeams(teams); // Llamar a la función "showTeams" para mostrar los datos de los equipos
                 break;
-            case '5': // Llamar a la función "playLeague" para simular los resultados de la competición
+            case '5': 
+                playLeage(teams);// Llamar a la función "playLeague" para simular los resultados de la competición
                 break;
             case '6': // Llamar a la función "showStandings" para mostrar la clasificación final
                 break;
