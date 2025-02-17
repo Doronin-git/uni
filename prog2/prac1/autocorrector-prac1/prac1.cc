@@ -81,6 +81,14 @@ int simulateGoals(Team &team){
 
     return goals;
 }
+void findbest(Team &team){
+    bool flag = false;
+    for (int i = 0; i<kMAXTEAMS; i++){
+        if (team.players[i].goals == 1){
+            ////aaaaaaaaaaaaaa
+        }
+    }
+}
 
 void playmatch(Team &home, Team &away){
     int homegoals = simulateGoals(home);
@@ -101,6 +109,11 @@ void playmatch(Team &home, Team &away){
         away.points +=1;
         home.draws ++;
         away.draws ++;
+    }
+
+    // best player part
+    for (int i = 0; i<kPLAYERS;i++){ //team home
+        //piensar mucho aqui
     }
 }
 
@@ -129,7 +142,6 @@ void addTeam(vector<Team>& teams){
         int size = teams.size() -1;
         teams[size].id = size;
         cout << "Enter team name: ";
-        //cin.ignore();
         char buffer[kTEAMNAME];
         cin.getline(buffer, kTEAMNAME);
         if (buffer[0] == '\0'){
@@ -147,12 +159,12 @@ void addTeam(vector<Team>& teams){
         for (int i = 0; i< kPLAYERS;i++){
             char gname[kTEAMNAME];
             strcpy(gname, teams[size].name); // ahora tiene el nombre de team
-            sprintf(teams[size].players[i].name, "%s-R%d", gname, i+1); 
+            sprintf(teams[size].players[i].name, "%s-R%d", gname, i); 
         }
     }
 }
 
-void generateAllTeams(vector<Team> &teams, int &contador){
+void generateAllTeams(vector<Team> &teams){
     teams.clear();
     unsigned int teamNum;
     do{
@@ -162,9 +174,9 @@ void generateAllTeams(vector<Team> &teams, int &contador){
             error(ERR_NUM_TEAMS);
         }
     }while(teamNum < 2 || teamNum > 20);
-    for (size_t i=0;i < teamNum;i++){
+    for (int i=0;i < teamNum;i++){
         teams.push_back(Team());
-        sprintf(teams[i].name ,"Team_%zu", i);
+        sprintf(teams[i].name ,"Team_%d", i);
         teams[i].wins = 0;
         teams[i].losses = 0;
         teams[i].draws = 0;
@@ -172,31 +184,30 @@ void generateAllTeams(vector<Team> &teams, int &contador){
         for (int j = 0; j< kPLAYERS;j++){
             char gname[kTEAMNAME];
             strcpy(gname, teams[i].name); // ahora tiene el nombre de team
-            snprintf(teams[i].players[j].name,sizeof(teams[i].players[j].name), "%s-R%d", gname, j+1); 
+            sprintf(teams[i].players[j].name, "%s-R%d", gname, j); 
         }
     }
-    contador += teamNum;
 }
 
-void addAllTeams(vector<Team> &teams, int &contador){
+void addAllTeams(vector<Team> &teams){
     unsigned char option;
     if (teams.size()> 0){
         do{
-            cout << "Do you want to delete existing teams (y/n)?\n"<< endl;
+            cout << "Do you want to delete existing teams (y/n)?"<< endl;
             cin >> option;
             cin.ignore();
-        }while(option != 'n' && option != 'y' && option != 'N' && option != 'Y');
+        }while(option != 'n' && option != 'y');
 
-        if (option == 'n' || option == 'N'){
+        if (option == 'n'){
             return;
         }
         else{
-            generateAllTeams(teams, contador);
+            generateAllTeams(teams);
         }
         
     }
     else{
-        generateAllTeams(teams, contador);
+        generateAllTeams(teams);
     }
 
 
@@ -205,7 +216,7 @@ void addAllTeams(vector<Team> &teams, int &contador){
 
 int findTeam(vector<Team> teams, char searchedTeam[kMAXTEAMS]){
     int result = -1;
-    for (size_t i = 0;i<teams.size();i++){
+    for (int i = 0;i<teams.size();i++){
         if (strcmp(teams[i].name, searchedTeam) == 0){
             result = i;
         }
@@ -233,6 +244,7 @@ void deleteTeam(vector<Team> &teams){
         }
         else{
             teams.erase(teams.begin() + teamPos);
+            //// Поздравляю теперь у тебя дырка в векторе поправь потом.
         }
 
     }
@@ -250,7 +262,7 @@ void showTeams(vector<Team> teams){
             char searchedTeam[kTEAMNAME];
             cin.getline(searchedTeam, kTEAMNAME); 
             if (searchedTeam[0] == '\0'){ // show all
-                for (size_t i = 0;i<teams.size();i++){
+                for (int i = 0;i<teams.size();i++){
                     cout << "Name:"<< teams[i].name <<endl
                         << "Wins: "<< teams[i].wins <<endl
                         << "Losses: "<< teams[i].losses <<endl
@@ -304,8 +316,8 @@ void playLeage(vector<Team> &teams){
     }
     else{
         borrar_info(teams);
-        for (size_t i = 0;i< teams.size(); i++){// error aqui de teams size si delete teams en el medio
-            for (size_t j = i+1; j < teams.size(); j++){
+        for (int i = 0;i< teams.size(); i++){// error aqui de teams size si delete teams en el medio
+            for (int j = i+1; j < teams.size(); j++){
                 unsigned int players_goals_before_match[5] = { teams[i].players[0].goals, teams[i].players[1].goals, teams[i].players[2].goals, teams[i].players[3].goals, teams[i].players[4].goals };
                 unsigned int players_goals_before_match_enemy[5] = { teams[j].players[0].goals, teams[j].players[1].goals, teams[j].players[2].goals, teams[j].players[3].goals, teams[j].players[4].goals };
                 playmatch(teams[i], teams[j]);
@@ -313,11 +325,7 @@ void playLeage(vector<Team> &teams){
                     if (players_goals_before_match[k] < teams[i].players[k].goals){
                         teams[i].players[k].best = true;
                         k=5;
-                    }
-                    if (players_goals_before_match_enemy[k] < teams[j].players[k].goals){
-                        teams[j].players[k].best = true;
-                        k=5;
-                    }  
+                    } 
                 }
             }
         }  
@@ -334,7 +342,7 @@ void showStandings(vector<Team> teams){
         return a.points > b.points;
     });
         // print name|wins|draws|losses|points
-        for (size_t i = 0; i < sorted.size(); i++){
+        for (int i = 0; i < sorted.size(); i++){
             char team_stat[100];
             sprintf(team_stat ,"%s|%d|%d|%d|%d", sorted[i].name, sorted[i].wins, sorted[i].draws, sorted[i].losses, sorted[i].points);
             cout <<"" << team_stat <<endl;
@@ -346,7 +354,6 @@ void showStandings(vector<Team> teams){
 
 // Función principal. Tendrás que añadir más código tuyo
 int main(){
-    int contador = 0;
     char option;
     vector<Team> teams;
     srand(888); // Fija la semilla del generador de números aleatorios. ¡NO TOCAR!
@@ -358,12 +365,15 @@ int main(){
         switch(option){
             case '1':
                 addTeam(teams);
+                cout << "Team have been added\n";
                 break;
             case '2':
-                addAllTeams(teams); // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
+                addAllTeams(teams);
+                cout << "Team have been added\n"; // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
                 break;
             case '3':
-                deleteTeam(teams); // Llamar a la función "deleteTeam" para borrar un equipo
+                deleteTeam(teams);
+                cout << "Team have been eliminated\n"; // Llamar a la función "deleteTeam" para borrar un equipo
                 break;
             case '4':
                 showTeams(teams); // Llamar a la función "showTeams" para mostrar los datos de los equipos
