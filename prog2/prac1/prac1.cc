@@ -360,7 +360,7 @@ int main(){
                 addTeam(teams);
                 break;
             case '2':
-                addAllTeams(teams); // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
+                addAllTeams(teams, contador); // Llamar a la función "addAllTeams" para añadir todos los equipos de una vez
                 break;
             case '3':
                 deleteTeam(teams); // Llamar a la función "deleteTeam" para borrar un equipo
